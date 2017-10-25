@@ -22,6 +22,12 @@ if [ -e "$(which git 2>/dev/null)" -a "$(git rev-parse --is-inside-work-tree 2>/
 
     # if latest commit is tagged and not dirty, then override using the tag name
     DESC=$(git describe 2>/dev/null)
+    RAWDESC=$(git describe --abbrev=0 2>/dev/null)
+    if [ $RAWDESC = $DESC ]; then
+        RELINFO="#define IS_RELEASE 1"
+    else
+        RELINFO="#define IS_RELEASE 0"
+    fi
     git diff-index --quiet HEAD -- || DESC="$DESC-dirty"
 
     # get a string like "2012-04-10 16:27:19 +0200"
@@ -37,6 +43,7 @@ fi
 # only update build.h if necessary
 if [ "$INFO" != "$NEWINFO" ]; then
     echo "$NEWINFO" >"$FILE"
+    echo "$RELINFO" >>"$FILE"
     if [ -n "$LAST_COMMIT_DATE" ]; then
         echo "#define BUILD_DATE \"$LAST_COMMIT_DATE\"" >> "$FILE"
     fi
