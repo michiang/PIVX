@@ -7,7 +7,7 @@
 
 #include "main.h"
 #ifdef HAVE_BUILD_INFO
-#include "build.h"
+#include "./obj/build.h"
 #endif
 
 #include "accumulators.h"
